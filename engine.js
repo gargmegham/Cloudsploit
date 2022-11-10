@@ -1,7 +1,14 @@
 var async = require("async");
+const { Console } = require("console");
+const fs = require("fs");
 var exports = require("./exports.js");
 var suppress = require("./postprocess/suppress.js");
 var output = require("./postprocess/output.js");
+
+const myLogger = new Console({
+  stdout: fs.createWriteStream("consoleLog.txt"),
+  stderr: fs.createWriteStream("consoleError.txt"),
+});
 
 /**
  * The main function to execute CloudSploit scans.
@@ -76,7 +83,7 @@ var engine = async function (cloudConfig, settings) {
     }
   });
 
-  if (!apiCalls.length) return console.log("ERROR: Nothing to collect.");
+  if (!apiCalls.length) return myLogger.error("ERROR: Nothing to collect.");
 
   // STEP 2 - Collect API Metadata from Service Providers
   collector(
@@ -89,7 +96,7 @@ var engine = async function (cloudConfig, settings) {
     },
     function (err, collection) {
       if (err || !collection || !Object.keys(collection).length)
-        return console.log(
+        return myLogger.error(
           `ERROR: Unable to obtain API metadata: ${err || "No data returned"}`
         );
       var maximumStatus = 0;
@@ -101,9 +108,9 @@ var engine = async function (cloudConfig, settings) {
             if (skippedPlugins.indexOf(key) > -1) return pluginDone(null, 0);
 
             var postRun = function (err, results) {
-              if (err) return console.log(`ERROR: ${err}`);
+              if (err) return myLogger.error(`ERROR: ${err}`);
               if (!results || !results.length) {
-                console.log(
+                myLogger.error(
                   `Plugin ${plugin.title} returned no results. There may be a problem with this plugin.`
                 );
               } else {
@@ -155,7 +162,7 @@ var engine = async function (cloudConfig, settings) {
             plugin.run(collection, settings, postRun);
           },
           function (err) {
-            if (err) return console.log(err);
+            if (err) return myLogger.error(err);
             outputHandler.close(cloudConfig);
           }
         );
