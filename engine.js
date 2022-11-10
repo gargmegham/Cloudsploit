@@ -16,7 +16,7 @@ const myLogger = new Console({
  * @param settings General purpose settings.
  */
 var engine = async function (cloudConfig, settings) {
-  myLogger.log("Starting engine.... for " + cloudConfig.userId);
+  myLogger.log("Starting engine for, user:" + cloudConfig.userId + ", compliance: " + settings.compliance + ", cloud: " + settings.cloud);
   // Initialize any suppression rules based on the the command line arguments
   var suppressionFilter = suppress.create(settings.suppress);
 

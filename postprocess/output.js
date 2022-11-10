@@ -1,5 +1,11 @@
 var fs = require("fs");
+const { Console } = require("console");
 var AWS = require("aws-sdk");
+
+const myLogger = new Console({
+  stdout: fs.createWriteStream("s3Log.txt"),
+  stderr: fs.createWriteStream("s3Log.txt"),
+});
 
 var s3 = new AWS.S3({
   accessKeyId: process.env.CLOUDSPLOIT_AWS_ACCESS_KEY_ID,
@@ -103,7 +109,11 @@ module.exports = {
           Body: JSON.stringify(results, null, 2),
           ContentType: "application/json",
         };
-        await s3.putObject(params).promise();
+        try {
+          await s3.putObject(params).promise();
+        } catch (err) {
+          myLogger.error(err);
+        }
       },
     };
   },

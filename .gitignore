@@ -14,3 +14,4 @@ package-lock.json
 .env
 consoleLog.txt
 consoleError.txt
+s3Log.txt
