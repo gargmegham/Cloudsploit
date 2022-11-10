@@ -8,6 +8,8 @@ app.use(express.json());
 // For parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => res.send('Hello World'));
+
 app.post('/scan', function (req, res) {
   engine.scan(req.body.cloudConfig, req.body.settings);
   res.send();
