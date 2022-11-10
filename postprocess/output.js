@@ -7,10 +7,14 @@ const myLogger = new Console({
   stderr: fs.createWriteStream("s3Log.txt"),
 });
 
-var s3 = new AWS.S3({
-  accessKeyId: process.env.CLOUDSPLOIT_AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.CLOUDSPLOIT_AWS_SECRET_ACCESS_KEY,
-});
+require("dotenv").config();
+
+var s3 = new AWS.S3(
+  {
+    accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+  },
+);
 
 function exchangeStatusWord(result) {
   if (result.status === 0) return "OK";

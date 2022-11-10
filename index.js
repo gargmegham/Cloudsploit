@@ -1,6 +1,5 @@
 var express = require("express");
 var engine = require("./engine.js");
-require("dotenv").config();
 
 var app = express();
 var PORT = 8000;
