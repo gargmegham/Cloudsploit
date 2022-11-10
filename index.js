@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => res.send('Hello World'));
 
 app.post('/scan', function (req, res) {
-  engine.scan(req.body.cloudConfig, req.body.settings);
+  engine(req.body.cloudConfig, req.body.settings);
   res.send();
 });
 
