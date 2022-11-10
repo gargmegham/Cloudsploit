@@ -99,7 +99,7 @@ module.exports = {
       close: async function (settings, cloudConfig) {
         const params = {
           Bucket: "cloudsploit-scans",
-          Key: `${settings.compliance}${cloudConfig.userId}.json`,
+          Key: `${settings.compliance}_${cloudConfig.userId}_${settings.cloud}.json`,
           Body: JSON.stringify(results, null, 2),
           ContentType: "application/json",
         };
