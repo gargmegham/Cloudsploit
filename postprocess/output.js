@@ -96,7 +96,7 @@ module.exports = {
         results.push(toWrite);
       },
 
-      close: async function (cloudConfig) {
+      close: async function (settings, cloudConfig) {
         const params = {
           Bucket: "cloudsploit-scans",
           Key: `${settings.compliance}${cloudConfig.userId}.json`,

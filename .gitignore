@@ -12,3 +12,5 @@ coverage/
 config.js
 package-lock.json
 .env
+consoleLog.txt
+consoleError.txt
