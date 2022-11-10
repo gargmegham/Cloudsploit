@@ -1,10 +1,13 @@
 const engine = require("./engine.js");
+const express = require('express');
 
-exports.handler = async (event) => {
-  engine(event["cloudConfig"], event["settings"]);
-  const response = {
-    statusCode: 200,
-    body: "Triggered successfully!",
-  };
-  return response;
-};
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  engine(req.query.cloudConfig, req.query.settings);
+  res.send('Triggered successfully!');
+});
+
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
