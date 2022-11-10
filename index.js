@@ -1,13 +1,19 @@
-const engine = require("./engine.js");
-const express = require('express');
+var express = require('express');
+var app = express();
+var PORT = 3000;
 
-const app = express();
+// For parsing application/json
+app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+// For parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  engine(req.query.cloudConfig, req.query.settings);
-  res.send('Triggered successfully!');
+app.post('/scan', function (req, res) {
+  engine.scan(req.body.cloudConfig, req.body.settings);
+  res.send();
 });
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
+app.listen(PORT, function (err) {
+  if (err) console.log(err);
+  console.log("Server listening on PORT", PORT);
+});

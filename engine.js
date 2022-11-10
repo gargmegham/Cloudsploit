@@ -8,7 +8,7 @@ var output = require("./postprocess/output.js");
  * @param cloudConfig The configuration for the cloud provider.
  * @param settings General purpose settings.
  */
-var engine = function (cloudConfig, settings) {
+var engine = async function (cloudConfig, settings) {
   // Initialize any suppression rules based on the the command line arguments
   var suppressionFilter = suppress.create(settings.suppress);
 
