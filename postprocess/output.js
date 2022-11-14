@@ -115,7 +115,7 @@ module.exports = {
           date.getFullYear();
         const params = {
           Bucket: "cloudsploit-scans",
-          Key: `${dateStr}_${settings.userId}_${settings.cloud}.json`,
+          Key: `${dateStr}_${settings.company_id}_${settings.cloud}.json`,
           Body: JSON.stringify(results, null, 2),
           ContentType: "application/json",
         };
