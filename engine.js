@@ -164,7 +164,7 @@ var engine = async function (cloudConfig, settings) {
           },
           function (err) {
             if (err) return myLogger.error(err);
-            outputHandler.close(cloudConfig);
+            outputHandler.close();
           }
         );
       }

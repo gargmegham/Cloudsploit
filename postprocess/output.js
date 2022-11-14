@@ -92,15 +92,8 @@ module.exports = {
 
       writeResult: function (result, plugin, pluginKey, complianceMsg) {
         var toWrite = {
+          ...plugin,
           plugin: pluginKey,
-          category: plugin.category,
-          title: plugin.title,
-          description: plugin.description,
-          domain: plugin.domain || "",
-          recommended_action: plugin.recommended_action || "",
-          remediate: plugin?.actions?.remediate || "",
-          link: plugin.link || "",
-          more_info: plugin.more_info,
           resource: result.resource || "N/A",
           region: result.region || "Global",
           status: exchangeStatusWord(result),
@@ -111,10 +104,18 @@ module.exports = {
         results.push(toWrite);
       },
 
-      close: async function (settings, cloudConfig) {
+      close: async function (settings) {
+        // get date in javascript format DD_MM_YYYY
+        var date = new Date();
+        var dateStr =
+          date.getDate() +
+          "_" +
+          (date.getMonth() + 1) +
+          "_" +
+          date.getFullYear();
         const params = {
           Bucket: "cloudsploit-scans",
-          Key: `${settings.compliance}_${cloudConfig.userId}_${settings.cloud}.json`,
+          Key: `${dateStr}_${settings.userId}_${settings.cloud}.json`,
           Body: JSON.stringify(results, null, 2),
           ContentType: "application/json",
         };
@@ -168,9 +169,9 @@ module.exports = {
         });
       },
 
-      close: function (cloudConfig) {
+      close: function () {
         outputs.forEach(function (output) {
-          output.close(settings, cloudConfig);
+          output.close(settings);
         });
       },
     };
