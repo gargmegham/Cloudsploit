@@ -29,6 +29,10 @@ var calls = [
         property: "items",
         paginate: "NextToken",
       },
+      getDomainNames: {
+        property: "items",
+        paginate: "NextToken",
+      },
     },
     AppConfig: {
       listApplications: {
@@ -303,6 +307,14 @@ var calls = [
       describeDBClusters: {
         property: "DBClusters",
         paginate: "Marker",
+        params: {
+          Filters: [
+            {
+              Name: "engine",
+              Values: ["docdb"],
+            },
+          ],
+        },
       },
     },
     DynamoDB: {
@@ -1094,6 +1106,15 @@ var calls = [
         paginate: "nextToken",
       },
     },
+    CognitoIdentityServiceProvider: {
+      listUserPools: {
+        property: "UserPools",
+        paginate: "NextToken",
+        params: {
+          MaxResults: 60,
+        },
+      },
+    },
   },
 ];
 
@@ -1687,6 +1708,11 @@ var postcalls = [
         override: true,
         rateLimit: 600,
       },
+      getWebACLForCognitoUserPool: {
+        reliesOnService: "cognitoidentityserviceprovider",
+        reliesOnCall: "listUserPools",
+        override: true,
+      },
     },
     ECS: {
       describeContainerInstances: {
@@ -2218,6 +2244,14 @@ var postcalls = [
         reliesOnCall: "listImageRecipes",
         filterKey: "imageRecipeArn",
         filterValue: "arn",
+      },
+    },
+    CognitoIdentityServiceProvider: {
+      describeUserPool: {
+        reliesOnService: "cognitoidentityserviceprovider",
+        reliesOnCall: "listUserPools",
+        filterKey: "UserPoolId",
+        filterValue: "Id",
       },
     },
   },

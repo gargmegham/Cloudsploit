@@ -556,6 +556,17 @@ var execute = async function (
         parent,
         { service: service, callKey: callKey }
       );
+    } else if (
+      data.data.clusters &&
+      ["kubernetes", "dataproc"].includes(service)
+    ) {
+      resultItems = setData(
+        collectionItems,
+        data.data["clusters"],
+        postCall,
+        parent,
+        { service: service, callKey: callKey }
+      );
     } else if (data.data[service]) {
       resultItems = setData(
         collectionItems,
@@ -577,6 +588,11 @@ var execute = async function (
         service: service,
         callKey: callKey,
       });
+    } else if (callObj.ignoreMiscData) {
+      set = false;
+      myEngine
+        ? (collection[service][myEngine][callKey][region].data = [])
+        : (collection[service][callKey][region].data = []);
     } else if (!myEngine && data.data) {
       set = false;
       if (data.data.constructor.name === "Array") {

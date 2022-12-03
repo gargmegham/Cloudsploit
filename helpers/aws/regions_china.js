@@ -7,6 +7,7 @@ module.exports = {
   all: regions,
   optin: [],
   accessanalyzer: [],
+  cognitoidentityserviceprovider: regions,
   acm: [],
   apigateway: regions,
   athena: [],

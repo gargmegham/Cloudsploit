@@ -22,6 +22,7 @@ module.exports = {
   cloudwatchlogs: regions,
   cloudformation: regions,
   comprehend: ["us-gov-west-1"],
+  cognitoidentityserviceprovider: regions,
   configservice: regions,
   dlm: regions,
   dms: regions,
