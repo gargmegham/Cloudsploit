@@ -42,14 +42,6 @@ module.exports = {
       },
 
       close: async function (settings) {
-        // get date in javascript format DD_MM_YYYY
-        var date = new Date();
-        var dateStr =
-          date.getDate() +
-          "_" +
-          (date.getMonth() + 1) +
-          "_" +
-          date.getFullYear();
         const params = {
           Bucket: "cloudsploit-scans",
           Key: `${settings.company_id}_${settings.cloud}.json`,
