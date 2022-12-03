@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/security/encryption/default-encryption",
   recommended_action:
     "Ensure that all node pools in GKE clusters have the desired encryption level.",
-  apis: ["clusters:kubernetes:list", "keyRings:list", "cryptoKeys:list"],
+  apis: ["kubernetes:list", "keyRings:list", "cryptoKeys:list"],
   settings: {
     kubernetes_node_encryption_level: {
       name: "Kubernetes Node Encryption Protection Level",
@@ -84,10 +84,9 @@ module.exports = {
         },
         function (cb) {
           async.each(
-            regions.clusters.kubernetes,
+            regions.kubernetes,
             function (region, rcb) {
               let clusters = helpers.addSource(cache, source, [
-                "clusters",
                 "kubernetes",
                 "list",
                 region,

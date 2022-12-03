@@ -11,7 +11,7 @@ module.exports = {
     "Creating instances in a single zone creates a single point of failure for all systems in the VPC. All managed instances should be created as Regional to ensure proper failover.",
   link: "https://cloud.google.com/vpc/docs/vpc",
   recommended_action: "Launch new instances as regional instance groups.",
-  apis: ["instanceGroups:aggregatedList", "instances:compute:list"],
+  apis: ["instanceGroups:aggregatedList", "compute:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -76,14 +76,13 @@ module.exports = {
         },
         function () {
           async.each(
-            regions.instances.compute,
+            regions.compute,
             function (location, loccb) {
               var noInstances = [];
               async.each(
                 regions.zones[location],
                 function (loc, lcb) {
                   let instances = helpers.addSource(cache, source, [
-                    "instances",
                     "compute",
                     "list",
                     loc,

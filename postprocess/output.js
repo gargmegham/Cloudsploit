@@ -9,12 +9,10 @@ const myLogger = new Console({
 
 require("dotenv").config();
 
-var s3 = new AWS.S3(
-  {
-    accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
-  },
-);
+var s3 = new AWS.S3({
+  accessKeyId: process.env.S3_AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_AWS_SECRET_ACCESS_KEY,
+});
 
 function exchangeStatusWord(result) {
   if (result.status === 0) return "OK";

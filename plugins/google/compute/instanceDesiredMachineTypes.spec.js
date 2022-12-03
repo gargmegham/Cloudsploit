@@ -4,13 +4,11 @@ var plugin = require("./instanceDesiredMachineTypes");
 
 const createCache = (instanceData, error) => {
   return {
-    instances: {
-      compute: {
-        list: {
-          "us-central1-a": {
-            data: instanceData,
-            err: error,
-          },
+    compute: {
+      list: {
+        "us-central1-a": {
+          data: instanceData,
+          err: error,
         },
       },
     },

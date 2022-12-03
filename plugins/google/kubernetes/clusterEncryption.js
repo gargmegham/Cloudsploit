@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets",
   recommended_action:
     "Ensure that all GKE clusters have the desired application-layer secrets encryption level.",
-  apis: ["clusters:kubernetes:list", "keyRings:list", "cryptoKeys:list"],
+  apis: ["kubernetes:list", "keyRings:list", "cryptoKeys:list"],
   settings: {
     kubernetes_cluster_encryption_level: {
       name: "Kubernetes Cluster Encryption Protection Level",
@@ -82,10 +82,9 @@ module.exports = {
         },
         function (cb) {
           async.each(
-            regions.clusters.kubernetes,
+            regions.kubernetes,
             function (region, rcb) {
               let clusters = helpers.addSource(cache, source, [
-                "clusters",
                 "kubernetes",
                 "list",
                 region,

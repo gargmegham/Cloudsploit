@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances",
   recommended_action:
     "For all instances, if the default service account is used, ensure full access to all cloud APIs is not configured.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
   compliance: {
     pci:
       "PCI has explicit requirements around default accounts and " +
@@ -48,7 +48,7 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var zones = regions.zones;
         var noInstances = [];
@@ -57,7 +57,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

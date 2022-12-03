@@ -11,7 +11,7 @@ module.exports = {
     "The number of provisioned Cloud Spanner instance nodes must be under desired limit to avoid reaching the limit and exceeding the set budget.",
   link: "https://cloud.google.com/spanner/docs/instances",
   recommended_action: "Modify Spanner instances to decrease number of nodes",
-  apis: ["instances:spanner:list"],
+  apis: ["spanner:list"],
   settings: {
     spanner_allowed_instance_node_count: {
       name: "Spanner Allowed Instance Node Count",
@@ -34,10 +34,9 @@ module.exports = {
     };
 
     async.each(
-      regions.instances.spanner,
+      regions.spanner,
       function (region, rcb) {
         let instances = helpers.addSource(cache, source, [
-          "instances",
           "spanner",
           "list",
           region,

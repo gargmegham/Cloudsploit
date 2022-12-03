@@ -3,13 +3,11 @@ var plugin = require("./dbRestorable");
 
 const createCache = (err, sqlInstances, backupRuns) => {
   return {
-    instances: {
-      sql: {
-        list: {
-          global: {
-            err: err,
-            data: sqlInstances,
-          },
+    sql: {
+      list: {
+        global: {
+          err: err,
+          data: sqlInstances,
         },
       },
     },

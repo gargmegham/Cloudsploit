@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/vpc/docs/using-routes",
   recommended_action:
     "IP forwarding settings can only be chosen when creating a new instance. Delete the affected instances and redeploy with IP forwarding disabled.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,7 +40,7 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var zones = regions.zones;
         var noInstances = [];
@@ -48,7 +48,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

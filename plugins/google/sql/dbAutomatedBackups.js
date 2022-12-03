@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/instance-settings",
   recommended_action:
     "Ensure that all database instances are configured with automatic backups enabled.",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,10 +40,9 @@ module.exports = {
     let project = projects.data[0].name;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

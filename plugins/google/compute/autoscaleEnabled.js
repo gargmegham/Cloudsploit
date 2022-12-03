@@ -14,7 +14,7 @@ module.exports = {
   apis: [
     "instanceGroups:aggregatedList",
     "autoscalers:aggregatedList",
-    "clusters:kubernetes:list",
+    "kubernetes:list",
   ],
 
   run: function (cache, settings, callback) {
@@ -88,7 +88,6 @@ module.exports = {
       },
       function () {
         let clusters = helpers.addSource(cache, source, [
-          "clusters",
           "kubernetes",
           "list",
           ["global"],

@@ -4,13 +4,11 @@ var plugin = require("./mysqlLatestVersion");
 
 const createCache = (err, data) => {
   return {
-    instances: {
-      sql: {
-        list: {
-          global: {
-            err: err,
-            data: data,
-          },
+    sql: {
+      list: {
+        global: {
+          err: err,
+          data: data,
         },
       },
     },

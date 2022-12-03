@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/access/service-accounts",
   recommended_action:
     "Make sure that compute instances are not using default service account",
-  apis: ["instances:compute:list", "projects:get"],
+  apis: ["compute:list", "projects:get"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -48,7 +48,7 @@ module.exports = {
     if (!defaultServiceAccount) return callback(null, results, source);
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var zones = regions.zones;
         var noInstances = [];
@@ -56,7 +56,6 @@ module.exports = {
           zones[region],
           (zone, zcb) => {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

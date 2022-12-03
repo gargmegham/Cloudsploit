@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/authorize-networks",
   recommended_action:
     "Ensure that SQL instances are configured to prohibit traffic from the public 0.0.0.0 global IP address.",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
   compliance: {
     hipaa:
       "SQL instances should only be launched in VPC environments and " +
@@ -52,10 +52,9 @@ module.exports = {
     let project = projects.data[0].name;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

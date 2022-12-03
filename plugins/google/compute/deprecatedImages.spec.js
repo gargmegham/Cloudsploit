@@ -4,13 +4,11 @@ var plugin = require("./deprecatedImages");
 
 const createCache = (instanceData, error, diskData, diskError) => {
   return {
-    instances: {
-      compute: {
-        list: {
-          "us-central1-a": {
-            data: instanceData,
-            err: error,
-          },
+    compute: {
+      list: {
+        "us-central1-a": {
+          data: instanceData,
+          err: error,
         },
       },
     },

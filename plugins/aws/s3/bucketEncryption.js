@@ -361,6 +361,7 @@ module.exports = {
                       region,
                       resource
                     );
+                    return;
                   }
 
                   if (listConfigurationProfiles.data.Items.length) {

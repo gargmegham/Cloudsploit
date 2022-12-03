@@ -240,10 +240,46 @@ const discoveredResources = [
   { resourceType: "AWS::ECR::Repository", count: 1 },
 ];
 
+const getRole = [
+  {
+    Role: {
+      Path: "/",
+      RoleName: "test-role-1",
+      RoleId: "AROAYE32SRU5VIMXXL3BH",
+      Arn: "arn:aws:iam::000011112222:role/test-role-1",
+      Tags: [
+        {
+          Key: "app_name",
+          Value: "Aqua CSPM",
+        },
+      ],
+    },
+  },
+  {
+    Role: {
+      Path: "/",
+      RoleName: "test-role-1",
+      RoleId: "AROAYE32SRU5VIMXXL3BH",
+      Arn: "arn:aws:iam::000011112222:role/test-role-1",
+      Tags: [],
+    },
+  },
+  {
+    Role: {
+      Path: "/",
+      RoleName: "test-role-2",
+      RoleId: "AROAYE32SRU5VIMXXL3BH",
+      Arn: "arn:aws:iam::000011112222:role/test-role-2",
+      Tags: [],
+    },
+  },
+];
+
 const createCache = (
   configStatus,
   discoveredResources,
   listRoles,
+  getRole,
   listAttachedRolePolicies,
   listRolePolicies,
   getRolePolicy,
@@ -325,6 +361,13 @@ const createCache = (
           },
         },
       },
+      getRole: {
+        "us-east-1": {
+          [roleName]: {
+            data: getRole,
+          },
+        },
+      },
     },
   };
 };
@@ -336,12 +379,16 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         listRolePolicies[0],
         getRolePolicy[2]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Role does not have overly-permissive policy"
+        );
         expect(results[0].status).to.equal(0);
         done();
       });
@@ -352,6 +399,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -360,6 +408,7 @@ describe("rolePolicyUnusedServices", function () {
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("policy allows wildcard actions");
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -370,6 +419,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -392,12 +442,16 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[0],
         {},
         listRolePolicies[1],
         getRolePolicy[4]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "policy allows all actions on selected resources"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -408,12 +462,16 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         {},
         listRolePolicies[1],
         getRolePolicy[3]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "policy allows all actions on all resources"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -424,6 +482,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -441,10 +500,11 @@ describe("rolePolicyUnusedServices", function () {
       );
     });
 
-    it("should PASS if on IAM roles found", function (done) {
+    it("should PASS if np IAM roles found", function (done) {
       const cache = createCache([configStatus[0]], discoveredResources, []);
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("No IAM roles found");
         expect(results[0].status).to.equal(0);
         done();
       });
@@ -462,10 +522,12 @@ describe("rolePolicyUnusedServices", function () {
         null,
         null,
         null,
+        null,
         { message: "Unable to list IAM roles" }
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("Unable to query for IAM roles");
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -476,6 +538,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         {},
         null,
         null,
@@ -489,6 +552,9 @@ describe("rolePolicyUnusedServices", function () {
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Unable to query for IAM attached policy for role:"
+        );
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -499,6 +565,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0],
         {},
         null,
@@ -511,6 +578,9 @@ describe("rolePolicyUnusedServices", function () {
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Unable to query for IAM role policy for role"
+        );
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -521,6 +591,7 @@ describe("rolePolicyUnusedServices", function () {
         null,
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0],
         null,
         null,
@@ -530,6 +601,7 @@ describe("rolePolicyUnusedServices", function () {
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(2);
+        expect(results[0].message).to.include("Unable to query config service");
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -540,10 +612,12 @@ describe("rolePolicyUnusedServices", function () {
         [],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(2);
+        expect(results[0].message).to.include("Config service is not enabled");
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -554,10 +628,14 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[1]],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(2);
+        expect(results[0].message).to.include(
+          "Config service is not recording"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -568,10 +646,14 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[2]],
         discoveredResources,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(2);
+        expect(results[0].message).to.include(
+          "Config Service is configured, and recording, but not delivering properly"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -582,10 +664,14 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         null,
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(2);
+        expect(results[0].message).to.include(
+          "Unable to query for Discovered Resources"
+        );
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -596,10 +682,12 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         [],
         [listRoles[1]],
+        getRole[1],
         listAttachedRolePolicies[0]
       );
       rolePolicyUnusedServices.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("No Discovered Resources found");
         expect(results[0].status).to.equal(0);
         done();
       });
@@ -610,6 +698,7 @@ describe("rolePolicyUnusedServices", function () {
         [configStatus[0]],
         discoveredResources,
         [listRoles[0]],
+        getRole[1],
         {},
         listRolePolicies[1],
         getRolePolicy[4]
@@ -619,6 +708,26 @@ describe("rolePolicyUnusedServices", function () {
         expect(results[0].status).to.equal(2);
         done();
       });
+    });
+
+    it("should PASS if role with specific regex is ignored", function (done) {
+      const cache = createCache(
+        [configStatus[0]],
+        discoveredResources,
+        [listRoles[0]],
+        getRole[0],
+        {},
+        listRolePolicies[1],
+        getRolePolicy[4]
+      );
+      rolePolicyUnusedServices.run(
+        cache,
+        { iam_role_policies_ignore_tag: "app_name:Aqua CSPM" },
+        (err, results) => {
+          expect(results.length).to.equal(0);
+          done();
+        }
+      );
     });
   });
 });

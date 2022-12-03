@@ -32,11 +32,9 @@ module.exports = {
     let desiredEncryptionLevelStr =
       settings.disk_encryption_level ||
       this.settings.disk_encryption_level.default;
-
     var desiredEncryptionLevel = helpers.PROTECTION_LEVELS.indexOf(
       desiredEncryptionLevelStr
     );
-
     var keysArr = [];
 
     let projects = helpers.addSource(cache, source, [
@@ -142,6 +140,8 @@ module.exports = {
                       currentEncryptionLevel = 1; //default
                     }
 
+                    let currentEncryptionLevelStr =
+                      helpers.PROTECTION_LEVELS[currentEncryptionLevel];
                     let resource = helpers.createResourceName(
                       "disks",
                       disk.name,
@@ -154,7 +154,7 @@ module.exports = {
                       helpers.addResult(
                         results,
                         2,
-                        "Disk encryption level is less than desired encryption level",
+                        `Disk encryption level ${currentEncryptionLevelStr} is less than desired encryption level ${desiredEncryptionLevelStr}`,
                         region,
                         resource
                       );
@@ -162,7 +162,7 @@ module.exports = {
                       helpers.addResult(
                         results,
                         0,
-                        "Disk encryption level is greater than or equal to desired encryption level",
+                        `Disk encryption level ${currentEncryptionLevelStr} is greater than or equal to desired encryption level ${desiredEncryptionLevelStr}`,
                         region,
                         resource
                       );

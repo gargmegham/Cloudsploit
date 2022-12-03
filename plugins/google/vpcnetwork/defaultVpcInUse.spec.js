@@ -15,13 +15,11 @@ const createCache = (err, data) => {
         },
       },
     },
-    instances: {
-      compute: {
-        list: {
-          "us-central1-a": {
-            err: err,
-            data: instances,
-          },
+    compute: {
+      list: {
+        "us-central1-a": {
+          err: err,
+          data: instances,
         },
       },
     },

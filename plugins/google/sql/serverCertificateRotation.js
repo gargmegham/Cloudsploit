@@ -13,7 +13,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/postgres/configure-ssl-instance?authuser=1#server-certs",
   recommended_action:
     "Edit Cloud SQL DB instances and rotate server certificates under Connections->MANAGE CERTIFICATES",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
   settings: {
     server_certicate_expiration_threshold: {
       name: "SQL Server Certificate Expiration Threshold",
@@ -58,10 +58,9 @@ module.exports = {
     let project = projects.data[0].name;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

@@ -10,7 +10,7 @@ module.exports = {
     "Labels are a lightweight way to group resources together that are related to or associated with each other. It is a best practice to label cloud resources to better organize and gain visibility into their usage.Labels are a lightweight way to group resources together that are related to or associated with each other. It is a best practice to label cloud resources to better organize and gain visibility into their usage.",
   link: "https://cloud.google.com/compute/docs/labeling-resources",
   recommended_action: "Ensure labels are added to all VM instances.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -39,7 +39,7 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var zones = regions.zones;
         var noInstances = [];
@@ -47,7 +47,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

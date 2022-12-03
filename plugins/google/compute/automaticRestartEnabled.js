@@ -12,11 +12,11 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/instances/setting-instance-scheduling-options#autorestart",
   recommended_action:
     "Ensure automatic restart is enabled for all virtual machine instances.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
   remediation_min_version: "202202080432",
   remediation_description:
     "Automatic Restart will be enabled for all virtual machine instances.",
-  apis_remediate: ["instances:compute:list", "projects:get"],
+  apis_remediate: ["compute:list", "projects:get"],
   actions: {
     remediate: ["compute.instances.setScheduling"],
     rollback: ["compute.instances.setScheduling"],
@@ -56,7 +56,7 @@ module.exports = {
 
     var project = projects.data[0].name;
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var noInstances = [];
         var zones = regions.zones;
@@ -64,7 +64,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/kubernetes-engine/docs/how-to/node-auto-repair",
   recommended_action:
     "Ensure that automatic node repair is enabled on all node pools in Kubernetes clusters",
-  apis: ["clusters:kubernetes:list"],
+  apis: ["kubernetes:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -41,10 +41,9 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.clusters.kubernetes,
+      regions.kubernetes,
       function (region, rcb) {
         let clusters = helpers.addSource(cache, source, [
-          "clusters",
           "kubernetes",
           "list",
           region,

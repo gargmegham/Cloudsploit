@@ -11,7 +11,7 @@ module.exports = {
   recommended_action:
     "Ensure that Azure Key Vaults are being used to store secrets.",
   link: "https://docs.microsoft.com/en-us/azure/app-service/app-service-key-vault-references",
-  apis: ["vaults:list", "vaults:getKeys"],
+  apis: ["vaults:list", "vaults:getKeys", "vaults:getSecrets"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -65,6 +65,14 @@ module.exports = {
             vault.id,
           ]);
 
+          if (
+            (keys && keys.data && keys.data.length) ||
+            (secrets && secrets.data && secrets.data.length)
+          ) {
+            keyVaultsBeingUsed = true;
+            break;
+          }
+
           if (!keys || keys.err || !keys.data) {
             helpers.addResult(
               results,
@@ -73,9 +81,6 @@ module.exports = {
               location,
               vault.id
             );
-          } else if (keys.data.length) {
-            keyVaultsBeingUsed = true;
-            break;
           }
 
           if (!secrets || secrets.err || !secrets.data) {
@@ -87,9 +92,6 @@ module.exports = {
               location,
               vault.id
             );
-          } else if (secrets.data.length) {
-            keyVaultsBeingUsed = true;
-            break;
           }
         }
 

@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/monitoring/kubernetes-engine/",
   recommended_action:
     "Ensure that Kubernetes clusters have alias IP ranges enabled.",
-  apis: ["clusters:kubernetes:list"],
+  apis: ["kubernetes:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,10 +40,9 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.clusters.kubernetes,
+      regions.kubernetes,
       function (region, rcb) {
         let clusters = helpers.addSource(cache, source, [
-          "clusters",
           "kubernetes",
           "list",
           region,

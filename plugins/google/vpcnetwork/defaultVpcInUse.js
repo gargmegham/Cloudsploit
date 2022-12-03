@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/vpc/docs/vpc",
   recommended_action:
     "Move resources from the default VPC to a new VPC created for that application or resource group.",
-  apis: ["networks:list", "instances:compute:list"],
+  apis: ["networks:list", "compute:list"],
   compliance: {
     pci:
       "PCI has explicit requirements around default accounts and " +
@@ -95,7 +95,6 @@ module.exports = {
           function (location, icb) {
             location.forEach((loc) => {
               let instances = helpers.addSource(cache, source, [
-                "instances",
                 "compute",
                 "list",
                 loc,

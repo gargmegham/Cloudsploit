@@ -24,6 +24,7 @@ module.exports = {
     "IAM:getRolePolicy",
     "ConfigService:describeConfigurationRecorderStatus",
     "ConfigService:getDiscoveredResourceCounts",
+    "IAM:getRole",
   ],
   settings: {
     iam_role_policies_ignore_path: {
@@ -81,6 +82,13 @@ module.exports = {
       regex: "^(true|false)$",
       default: "false",
     },
+    iam_role_policies_ignore_tag: {
+      name: "IAM Role Policies Ignore Tag",
+      description:
+        "Ignores roles that contain the provided tag. Give key-value pair i.e. env:Finance ",
+      regex: "^.*$",
+      default: "",
+    },
   },
 
   run: function (cache, settings, callback) {
@@ -100,6 +108,9 @@ module.exports = {
       ignore_customer_managed_iam_policies:
         settings.ignore_customer_managed_iam_policies ||
         this.settings.ignore_customer_managed_iam_policies.default,
+      iam_role_policies_ignore_tag:
+        settings.iam_role_policies_ignore_tag ||
+        this.settings.iam_role_policies_ignore_tag.default,
     };
 
     config.ignore_service_specific_wildcards =
@@ -369,6 +380,56 @@ module.exports = {
               role.Path.indexOf(config.iam_role_policies_ignore_path) > -1
             ) {
               return cb();
+            }
+
+            // Get role details
+            var getRole = helpers.addSource(cache, source, [
+              "iam",
+              "getRole",
+              iamRegion,
+              role.RoleName,
+            ]);
+
+            if (
+              !getRole ||
+              getRole.err ||
+              !getRole.data ||
+              !getRole.data.Role
+            ) {
+              helpers.addResult(
+                results,
+                3,
+                "Unable to query for IAM role details: " +
+                  role.RoleName +
+                  ": " +
+                  helpers.addError(getRole),
+                "global",
+                role.Arn
+              );
+              return cb();
+            }
+
+            //Skip roles with user defined tags
+            if (
+              config.iam_role_policies_ignore_tag &&
+              config.iam_role_policies_ignore_tag.length
+            ) {
+              if (config.iam_role_policies_ignore_tag.split(":").length == 2) {
+                var key = config.iam_role_policies_ignore_tag
+                  .split(":")[0]
+                  .trim();
+                var value = new RegExp(
+                  config.iam_role_policies_ignore_tag.split(":")[1].trim()
+                );
+                if (getRole.data.Role.Tags && getRole.data.Role.Tags.length) {
+                  if (
+                    getRole.data.Role.Tags.find(
+                      (tag) => tag.Key == key && value.test(tag.Value)
+                    )
+                  )
+                    return cb();
+                }
+              }
             }
 
             if (

@@ -11,7 +11,7 @@ module.exports = {
     "VM instances should have deletion protection enabled in order to prevent them for being accidentally deleted.",
   link: "https://cloud.google.com/compute/docs/instances/preventing-accidental-vm-deletion",
   recommended_action: "Modify VM instances to enable deletion protection",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,7 +40,7 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var zones = regions.zones;
         var noInstances = [];
@@ -48,7 +48,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

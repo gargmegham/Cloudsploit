@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/postgres/flags",
   recommended_action:
     "Ensure that log_min_error_statement flag is set to Error for all PostgreSQL instances.",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
   settings: {
     log_min_error_statement: {
       name: "Log Min Error Statement",
@@ -53,10 +53,9 @@ module.exports = {
       settings.log_min_error_statement ||
       this.settings.log_min_error_statement.default;
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

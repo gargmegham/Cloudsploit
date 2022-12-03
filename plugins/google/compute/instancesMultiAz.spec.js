@@ -4,13 +4,11 @@ var plugin = require("./instancesMultiAz");
 
 const createCache = (instanceData, instanceGroupData, error, iGErr) => {
   return {
-    instances: {
-      compute: {
-        list: {
-          "us-central1-a": {
-            data: instanceData,
-            err: error,
-          },
+    compute: {
+      list: {
+        "us-central1-a": {
+          data: instanceData,
+          err: error,
         },
       },
     },

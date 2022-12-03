@@ -40,6 +40,13 @@ module.exports = {
       regex: "^(true|false)$",
       default: "true",
     },
+    iam_role_policies_ignore_tag: {
+      name: "IAM Role Policies Ignore Tag",
+      description:
+        "Ignores roles that contain the provided tag. Give key-value pair i.e. env:Finance ",
+      regex: "^.*$",
+      default: "",
+    },
   },
   asl: {
     conditions: [
@@ -68,6 +75,9 @@ module.exports = {
       skip_aws_service_roles:
         settings.skip_aws_service_roles ||
         this.settings.skip_aws_service_roles.default,
+      iam_role_policies_ignore_tag:
+        settings.iam_role_policies_ignore_tag ||
+        this.settings.iam_role_policies_ignore_tag.default,
     };
 
     config.skip_aws_service_roles = config.skip_aws_service_roles == "true";
@@ -129,7 +139,7 @@ module.exports = {
           role.RoleName,
         ]);
 
-        if (!getRole || getRole.err || !getRole.data) {
+        if (!getRole || getRole.err || !getRole.data || !getRole.data.Role) {
           helpers.addResult(
             results,
             3,
@@ -143,8 +153,28 @@ module.exports = {
           return cb();
         }
 
+        //Skip roles with user defined tags
         if (
-          !getRole.data.Role ||
+          config.iam_role_policies_ignore_tag &&
+          config.iam_role_policies_ignore_tag.length
+        ) {
+          if (config.iam_role_policies_ignore_tag.split(":").length == 2) {
+            var key = config.iam_role_policies_ignore_tag.split(":")[0].trim();
+            var value = new RegExp(
+              config.iam_role_policies_ignore_tag.split(":")[1].trim()
+            );
+            if (getRole.data.Role.Tags && getRole.data.Role.Tags.length) {
+              if (
+                getRole.data.Role.Tags.find(
+                  (tag) => tag.Key == key && value.test(tag.Value)
+                )
+              )
+                return cb();
+            }
+          }
+        }
+
+        if (
           !getRole.data.Role.RoleLastUsed ||
           !getRole.data.Role.RoleLastUsed.LastUsedDate
         ) {

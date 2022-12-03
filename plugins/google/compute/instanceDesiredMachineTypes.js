@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/machine-types",
   recommended_action:
     "Stop the Virtual Machine instance, change the machine type to the desired type  and restart the instance.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
   settings: {
     instance_desired_machine_types: {
       name: "Instance Desired Machine Types",
@@ -48,7 +48,7 @@ module.exports = {
     }
     var project = projects.data[0].name;
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var noInstances = [];
         var zones = regions.zones;
@@ -56,7 +56,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

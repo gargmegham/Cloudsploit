@@ -25,13 +25,11 @@ const createCache = (
         },
       },
     },
-    clusters: {
-      kubernetes: {
-        list: {
-          global: {
-            data: clusters,
-            err: null,
-          },
+    kubernetes: {
+      list: {
+        global: {
+          data: clusters,
+          err: null,
         },
       },
     },

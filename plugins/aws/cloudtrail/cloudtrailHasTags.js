@@ -46,7 +46,13 @@ module.exports = {
         }
 
         for (let trail of describeTrails.data) {
-          if (!trail.TrailARN) continue;
+          if (
+            !trail.TrailARN ||
+            (trail.HomeRegion && trail.HomeRegion.toLowerCase() !== region)
+          )
+            continue;
+          // Skip CloudSploit-managed events bucket
+          if (trail.TrailARN == helpers.CLOUDSPLOIT_EVENTS_BUCKET) continue;
 
           let listTags = helpers.addSource(cache, source, [
             "cloudtrail",
@@ -56,6 +62,7 @@ module.exports = {
           ]);
 
           if (
+            !listTags ||
             listTags.err ||
             !listTags.data ||
             !listTags.data.ResourceTagList ||

@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/images/image-management-best-practices",
   recommended_action:
     "Ensure that no compute instances are created from deprecated images.",
-  apis: ["instances:compute:list", "disks:list", "images:list"],
+  apis: ["compute:list", "disks:list", "images:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -55,7 +55,7 @@ module.exports = {
     }
 
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var noInstances = [];
         var zones = regions.zones;
@@ -63,7 +63,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

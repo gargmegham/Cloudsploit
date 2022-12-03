@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/sqlserver/cmek",
   recommended_action:
     "Ensure that all Google Cloud SQL instances have desired encryption level.",
-  apis: ["instances:sql:list", "keyRings:list", "cryptoKeys:list"],
+  apis: ["sql:list", "keyRings:list", "cryptoKeys:list"],
   settings: {
     sql_encryption_protection_level: {
       name: "SQL Encryption Protection Level",
@@ -82,10 +82,9 @@ module.exports = {
         },
         function (cb) {
           async.each(
-            regions.instances.sql,
+            regions.sql,
             function (region, rcb) {
               let sqlInstances = helpers.addSource(cache, source, [
-                "instances",
                 "sql",
                 "list",
                 region,

@@ -13,7 +13,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/postgres/flags#setting_a_database_flag",
   recommended_action:
     "Ensure that all PostgreSQL database instances have log_checkpoints flag and it value is set to on.",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
   settings: {
     min_postgres_max_connections: {
       name: "Minimum PostgreSQL Max Connections",
@@ -72,10 +72,9 @@ module.exports = {
     config.allow_default = config.allow_default == "true";
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

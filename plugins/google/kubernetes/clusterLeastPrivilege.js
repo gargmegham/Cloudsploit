@@ -13,7 +13,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/access/service-accounts",
   recommended_action:
     "Ensure that all Kubernetes clusters are created with minimal access scope.",
-  apis: ["clusters:kubernetes:list"],
+  apis: ["kubernetes:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -42,10 +42,9 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.clusters.kubernetes,
+      regions.kubernetes,
       (region, rcb) => {
         var clusters = helpers.addSource(cache, source, [
-          "clusters",
           "kubernetes",
           "list",
           region,

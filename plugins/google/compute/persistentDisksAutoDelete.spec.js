@@ -24,13 +24,11 @@ const createCache = (instanceData, error, disksData, disksErr) => {
         },
       },
     },
-    instances: {
-      compute: {
-        list: {
-          "us-central1-a": {
-            data: instanceData,
-            err: error,
-          },
+    compute: {
+      list: {
+        "us-central1-a": {
+          data: instanceData,
+          err: error,
         },
       },
     },

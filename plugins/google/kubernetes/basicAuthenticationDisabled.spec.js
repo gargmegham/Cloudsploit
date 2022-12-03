@@ -4,13 +4,11 @@ var plugin = require("./basicAuthenticationDisabled");
 
 const createCache = (err, data) => {
   return {
-    clusters: {
-      kubernetes: {
-        list: {
-          global: {
-            err: err,
-            data: data,
-          },
+    kubernetes: {
+      list: {
+        global: {
+          err: err,
+          data: data,
         },
       },
     },

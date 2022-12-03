@@ -11,7 +11,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/instance-settings",
   recommended_action:
     "Ensure all database instances are configured with automatic backups and can be restored to a recent point with binary logging enabled.",
-  apis: ["instances:sql:list", "backupRuns:list"],
+  apis: ["sql:list", "backupRuns:list"],
   compliance: {
     pci:
       "PCI requires that security procedures, including restoration of " +
@@ -46,10 +46,9 @@ module.exports = {
     let project = projects.data[0].name;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

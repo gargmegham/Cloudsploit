@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/create-manage-users",
   recommended_action:
     "Ensure that root access for SQL instances are not allowed from any host.",
-  apis: ["instances:sql:list", "users:list"],
+  apis: ["sql:list", "users:list"],
 
   run: function (cache, settings, callback) {
     var results = [];

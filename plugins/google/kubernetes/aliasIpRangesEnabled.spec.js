@@ -4,13 +4,11 @@ var plugin = require("./aliasIpRangesEnabled");
 
 const createCache = (err, data) => {
   return {
-    clusters: {
-      kubernetes: {
-        list: {
-          global: {
-            err: err,
-            data: data,
-          },
+    kubernetes: {
+      list: {
+        global: {
+          err: err,
+          data: data,
         },
       },
     },

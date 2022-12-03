@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/db-versions",
   recommended_action:
     "Ensure that all your MySQL database instances are using the latest MYSQL database version.",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -43,10 +43,9 @@ module.exports = {
     const latestMySQLVersion = 8.0;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/customer-managed-encryption",
   recommended_action:
     "Ensure that all Dataproc clusters have desired encryption level.",
-  apis: ["clusters:dataproc:list", "keyRings:list", "cryptoKeys:list"],
+  apis: ["dataproc:list", "keyRings:list", "cryptoKeys:list"],
   settings: {
     dataproc_cluster_encryption_level: {
       name: "Dataproc Cluster Encryption Level",
@@ -81,10 +81,9 @@ module.exports = {
         },
         function (cb) {
           async.each(
-            regions.clusters.dataproc,
+            regions.dataproc,
             function (region, rcb) {
               let clusters = helpers.addSource(cache, source, [
-                "clusters",
                 "dataproc",
                 "list",
                 region,

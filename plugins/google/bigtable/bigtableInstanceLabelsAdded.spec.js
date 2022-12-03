@@ -21,13 +21,11 @@ const instances = [
 
 const createCache = (err, data) => {
   return {
-    instances: {
-      bigtable: {
-        list: {
-          global: {
-            err: err,
-            data: data,
-          },
+    bigtable: {
+      list: {
+        global: {
+          err: err,
+          data: data,
         },
       },
     },

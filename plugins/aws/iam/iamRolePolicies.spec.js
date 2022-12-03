@@ -152,8 +152,26 @@ const getPolicyVersion = [
   },
 ];
 
+const getRole = [
+  {
+    Role: {
+      Path: "/",
+      RoleName: "test-role-1",
+      RoleId: "AROAYE32SRU5VIMXXL3BH",
+      Arn: "arn:aws:iam::000011112222:role/test-role-1",
+      Tags: [
+        {
+          Key: "app_name",
+          Value: "Aqua CSPM",
+        },
+      ],
+    },
+  },
+];
+
 const createCache = (
   listRoles,
+  getRole,
   listAttachedRolePolicies,
   listRolePolicies,
   getRolePolicy,
@@ -178,6 +196,13 @@ const createCache = (
         "us-east-1": {
           err: listRolesErr,
           data: listRoles,
+        },
+      },
+      getRole: {
+        "us-east-1": {
+          [roleName]: {
+            data: getRole,
+          },
         },
       },
       listAttachedRolePolicies: {
@@ -238,12 +263,16 @@ describe("iamRolePolicies", function () {
     it("should PASS if role does not have overly-permissive policy", function (done) {
       const cache = createCache(
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         listRolePolicies[0],
         getRolePolicy[2]
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Role does not have overly-permissive policy"
+        );
         expect(results[0].status).to.equal(0);
         done();
       });
@@ -252,6 +281,7 @@ describe("iamRolePolicies", function () {
     it("should FAIL if role policy allows wildcard actions", function (done) {
       const cache = createCache(
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -260,6 +290,7 @@ describe("iamRolePolicies", function () {
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("policy allows wildcard actions");
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -268,6 +299,7 @@ describe("iamRolePolicies", function () {
     it("should PASS if role policy allows wildcard actions but ignore managed iam policies is set to true", function (done) {
       const cache = createCache(
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -288,12 +320,16 @@ describe("iamRolePolicies", function () {
     it("should FAIL if role policy allows all actions on selected resources", function (done) {
       const cache = createCache(
         [listRoles[0]],
+        getRole[0],
         {},
         listRolePolicies[1],
         getRolePolicy[4]
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "policy allows all actions on selected resources"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -302,12 +338,16 @@ describe("iamRolePolicies", function () {
     it("should FAIL if role policy allows all actions on all resources", function (done) {
       const cache = createCache(
         [listRoles[1]],
+        getRole[0],
         {},
         listRolePolicies[1],
         getRolePolicy[3]
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "policy allows all actions on all resources"
+        );
         expect(results[0].status).to.equal(2);
         done();
       });
@@ -316,6 +356,7 @@ describe("iamRolePolicies", function () {
     it("should PASS if role policy allows wildcard actions but ignore service specific roles setting is enabled", function (done) {
       const cache = createCache(
         [listRoles[0]],
+        getRole[0],
         listAttachedRolePolicies[2],
         null,
         null,
@@ -337,17 +378,19 @@ describe("iamRolePolicies", function () {
       const cache = createCache([]);
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("No IAM roles found");
         expect(results[0].status).to.equal(0);
         done();
       });
     });
 
-    it("should UNKNOWN if unable to list", function (done) {
+    it("should UNKNOWN if unable to list IAM roles", function (done) {
       const cache = createCache(null, null, null, null, null, null, {
         message: "Unable to list IAM roles",
       });
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include("Unable to query for IAM roles");
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -356,6 +399,7 @@ describe("iamRolePolicies", function () {
     it("should UNKNOWN if unable to list attached role policies", function (done) {
       const cache = createCache(
         [listRoles[1]],
+        getRole[0],
         {},
         null,
         null,
@@ -367,6 +411,9 @@ describe("iamRolePolicies", function () {
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Unable to query for IAM attached policy for role"
+        );
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -375,6 +422,7 @@ describe("iamRolePolicies", function () {
     it("should UNKNOWN if unable to list role policies", function (done) {
       const cache = createCache(
         [listRoles[1]],
+        getRole[0],
         listAttachedRolePolicies[0],
         {},
         null,
@@ -385,6 +433,9 @@ describe("iamRolePolicies", function () {
       );
       iamRolePolicies.run(cache, {}, (err, results) => {
         expect(results.length).to.equal(1);
+        expect(results[0].message).to.include(
+          "Unable to query for IAM role policy for role"
+        );
         expect(results[0].status).to.equal(3);
         done();
       });
@@ -396,6 +447,24 @@ describe("iamRolePolicies", function () {
         expect(results.length).to.equal(0);
         done();
       });
+    });
+
+    it("should PASS if role with specific regex is ignored", function (done) {
+      const cache = createCache(
+        [listRoles[0]],
+        getRole[0],
+        listAttachedRolePolicies[2],
+        listRolePolicies[0],
+        getRolePolicy[2]
+      );
+      iamRolePolicies.run(
+        cache,
+        { iam_role_policies_ignore_tag: "app_name:Aqua CSPM" },
+        (err, results) => {
+          expect(results.length).to.equal(0);
+          done();
+        }
+      );
     });
   });
 });

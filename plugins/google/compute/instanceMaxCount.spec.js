@@ -4,13 +4,11 @@ var plugin = require("./instanceMaxCount");
 
 const createCache = (instanceData, error) => {
   return {
-    instances: {
-      compute: {
-        list: {
-          "us-east1-b": {
-            data: instanceData,
-            err: error,
-          },
+    compute: {
+      list: {
+        "us-east1-b": {
+          data: instanceData,
+          err: error,
         },
       },
     },

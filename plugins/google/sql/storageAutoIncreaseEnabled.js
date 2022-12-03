@@ -13,7 +13,7 @@ module.exports = {
   link: "https://cloud.google.com/sql/docs/mysql/instance-settings?authuser=1#automatic-storage-increase-2ndgen",
   recommended_action:
     "Edit Cloud SQL instances and enable automatic storage increases feature under storage",
-  apis: ["instances:sql:list"],
+  apis: ["sql:list"],
   settings: {
     sql_storage_auto_increase_limit: {
       name: "SQL Storage Auto Increase Limit",
@@ -59,10 +59,9 @@ module.exports = {
     let project = projects.data[0].name;
 
     async.each(
-      regions.instances.sql,
+      regions.sql,
       function (region, rcb) {
         let sqlInstances = helpers.addSource(cache, source, [
-          "instances",
           "sql",
           "list",
           region,

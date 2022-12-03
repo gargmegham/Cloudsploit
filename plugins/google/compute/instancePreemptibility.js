@@ -12,7 +12,7 @@ module.exports = {
   link: "https://cloud.google.com/compute/docs/instances/preemptible",
   recommended_action:
     "Ensure that your Google Compute Engine VM instances are not preemptible.",
-  apis: ["instances:compute:list"],
+  apis: ["compute:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,7 +40,7 @@ module.exports = {
 
     var project = projects.data[0].name;
     async.each(
-      regions.instances.compute,
+      regions.compute,
       (region, rcb) => {
         var noInstances = [];
         var zones = regions.zones;
@@ -48,7 +48,6 @@ module.exports = {
           zones[region],
           function (zone, zcb) {
             var instances = helpers.addSource(cache, source, [
-              "instances",
               "compute",
               "list",
               zone,

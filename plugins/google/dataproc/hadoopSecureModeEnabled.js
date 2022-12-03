@@ -11,7 +11,7 @@ module.exports = {
     "Enabling Hadoop secure mode will allow multi-tenancy with security features like isolation, encryption, and user authentication within the cluster. It also enforces all Hadoop services and users to be authenticated via Kerberos Key distribution.",
   link: "https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/security",
   recommended_action: "Enable Hadoop secure mode for all Dataproc clusters.",
-  apis: ["clusters:dataproc:list"],
+  apis: ["dataproc:list"],
 
   run: function (cache, settings, callback) {
     var results = [];
@@ -40,10 +40,9 @@ module.exports = {
     var project = projects.data[0].name;
 
     async.each(
-      regions.clusters.dataproc,
+      regions.dataproc,
       function (region, rcb) {
         let clusters = helpers.addSource(cache, source, [
-          "clusters",
           "dataproc",
           "list",
           region,

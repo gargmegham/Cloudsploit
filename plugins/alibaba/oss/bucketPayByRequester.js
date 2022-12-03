@@ -67,7 +67,7 @@ module.exports = {
         bucketLocation = bucketLocation.replace("oss-", "");
 
         if (bucketLocation !== region && !regions.all.includes(bucketLocation))
-          return;
+          return cb();
 
         var resource = helpers.createArn(
           "oss",
