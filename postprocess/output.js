@@ -22,7 +22,7 @@ function exchangeStatusWord(result) {
 }
 
 module.exports = {
-  createJson: function (stream, settings) {
+  createJson: function (stream) {
     var results = [];
     return {
       stream: stream,
@@ -67,7 +67,7 @@ module.exports = {
   create: function (settings) {
     var outputs = [];
     if (settings.json) {
-      outputs.push(this.createJson(null, settings));
+      outputs.push(this.createJson(null));
     }
     return {
       writeResult: function (result, plugin, pluginKey, complianceMsg) {
