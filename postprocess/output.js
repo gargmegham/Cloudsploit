@@ -24,10 +24,21 @@ function exchangeStatusWord(result) {
 module.exports = {
   createJson: function (stream) {
     var results = [];
+    var controlRegionMemory = {};
     return {
       stream: stream,
 
       writeResult: function (result, plugin, pluginKey, complianceMsg) {
+        if (
+          plugin["title"] in controlRegionMemory &&
+          controlRegionMemory[plugin["title"]].has(result.region || "Global")
+        )
+          return;
+        else {
+          if (!(plugin["title"] in controlRegionMemory))
+            controlRegionMemory[plugin["title"]] = new Set();
+          controlRegionMemory[plugin["title"]].add(result.region || "Global");
+        }
         var toWrite = {
           ...plugin,
           plugin: pluginKey,
